@@ -45,10 +45,10 @@ class Module{
     public:
         void Enrollment();
         void Balcheck(int accNo);
-        void Withdraw();
-        void Deposit();
-        void transfer();
-        void changePIN();
+        void Withdraw(int accNo);
+        void Deposit(int accNo);
+        void transfer(int accNo);
+        void changePIN(int accNo);
         // Input checker
         double inputDouble(string prompt);
         string inputDriveLetter();
@@ -276,40 +276,103 @@ void Module :: Enrollment(){
 
 }
 
-
-void Module :: Enrollment(){
-
-}
-
 void Module :: Balcheck(int accNo){
     int position;
 
     position = locate(accNo);
 
+    cout<<"BALANCE INQUIRY"<<endl<<endl;
     cout<<"Your current balance is: "<<fixed<<setprecision(2)<<data[position].balance;
 }
 
-void Module :: Withdraw(){
+void Module :: Withdraw(int accNo){
+    int position, amount;
 
+    position = locate(accNo);
+
+    cout<<"WITHDRAW"<<endl<<endl;
+    cout<<"Enter Amount to withdraw: ";
+    cin>>amount;
+
+    if(amount>data[position].balance){
+        cout<<"Insufficient Balance!"<<endl;
+        system("pause");
+    }else{
+     data[position].balance = data[position].balance - amount;
+     cout<<"Withdraw Successful!"<<endl;
+     system("pause");
+    }
 }
 
-void Module :: Deposit(){
+void Module :: Deposit(int accNo){
+    int position, amount;
 
+    position = locate(accNo);
+
+    cout<<"DEPOSIT"<<endl<<endl;
+    cout<<"Enter Amount to deposit: ";
+    cin>>amount;
+
+    data[position].balance = amount + data[position].balance;
+
+    cout<<"Successfully Deposited!"<<endl;
+    system("pause");
 }
 
-void Module :: transfer(){
+void Module :: transfer(int accNo){
+    int position, amount, transferee;
 
+    cout<<"TRANSFER"<<endl<<endl;
+    cout<<"Input Account number to transfer to: ";
+    cin>>transferee;
+
+    position = locate(accNo);
+    psttrans = locate(transferee);
+
+    if(psttrans == -1){
+        cout<<"Account not found!"<<endl<<"Please input a valid account number."<<endl;
+        system("pause");
+    }else{
+        data[position].balance = data[position].balance - amount;
+        data[psttrans].balance = data[position].balance + amount;
+        cout<<"Successfully Transferred!"<<endl;
+        system("pause");
+    }
 }
 
-void Module :: changePIN(){
+void Module :: changePIN(int accNo){
+    int minPIN = 4;
+    int maxPIN = 6;
+    int position;
+    string newPIN, currPIN;
 
-}
+    position = locate(accNo);
 
-void Module :: save(){
+    cout<<"CHANGE PIN"<<endl<<endl;
+    cout<<"Enter Current PIN: ";
+    cin>> currPIN;
 
-}
+    if(currPIN!=data[position].pin){
+        cout<<"Invalid PIN!"<<endl<<"Please Try Again!"<<endl<<endl;
+        system("pause");
+    }else{
+        cout<<"Enter new PIN: "
+        cin>> newPIN;
 
-void Module :: retrieve(){
+        if(newPIN.size()>maxPIN){
+            cout<<"New PIN is too large!"<<endl<<endl;
+            system("pause");
+        }
+        else if(newPIN.size()<minPIN){
+            cout<<"New PIN is too small!"<<endl<<endl;
+            system("pause");
+        }
+        else{
+            data[position].pin = newPIN;
+            cout<<"PIN Changed!"<<endl<<endl;
+            system("pause");
+        }
+    }
 
 }
 
@@ -340,22 +403,31 @@ int main(){
         case 1:
             system("cls");
             M.Balcheck(A.accNo);
+            M.save();
             break;
 
         case 2:
-
+            system("cls");
+            M.Withdraw(A.accNo);
+            M.save();
             break;
 
         case 3:
-
+            system("cls");
+            M.Deposit(A.accNo);
+            M.save();
             break;
 
         case 4:
-
+            system("cls");
+            M.transfer(A.accNo);
+            M.save();
             break;
 
         case 5:
-
+            system("cls");
+            M.changePIN(A.accNo);
+            M.save();
             break;
 
         case 6:
