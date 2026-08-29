@@ -67,7 +67,13 @@ void Module :: Enrollment(){
 
 }
 
-void Module :: Balcheck(){
+void Module :: Balcheck(int accNo){
+    int position;
+
+    position = locate(accNo);
+
+    cout<<"Your current balance is: "<<fixed<<setprecision(2)<<data[position].balance;
+
 
 }
 
