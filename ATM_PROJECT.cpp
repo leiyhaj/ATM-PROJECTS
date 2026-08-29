@@ -46,7 +46,7 @@ class Module{
 
     public:
         void Enrollment();
-        void Balcheck();
+        void Balcheck(int accNo);
         void Withdraw();
         void Deposit();
         void transfer();
@@ -73,8 +73,6 @@ void Module :: Balcheck(int accNo){
     position = locate(accNo);
 
     cout<<"Your current balance is: "<<fixed<<setprecision(2)<<data[position].balance;
-
-
 }
 
 void Module :: Withdraw(){
@@ -120,12 +118,14 @@ int menu(){
 
 int main(){
     Module M;
+    Account A;
 
     while(1){
         switch(menu()){
 
         case 1:
-
+            system("cls");
+            M.Balcheck(A.accNo);
             break;
 
         case 2:
