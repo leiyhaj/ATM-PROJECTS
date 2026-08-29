@@ -3,6 +3,7 @@
 #include <iomanip>
 #include <fstream>
 #include <sstream>
+#include <cstdlib>
 using namespace std;
 
 #define MAX 100
@@ -51,6 +52,16 @@ class Module{
         void transfer();
         void changePIN();
 };
+
+int Module :: generateAccNo(){
+    srand(time(0));
+
+    x = 10000 //Start
+    y = 99999 //End
+    accNo = x + rand() % (y - x + 1);
+
+    return accNo;
+}
 
 void Module :: Enrollment(){
 
