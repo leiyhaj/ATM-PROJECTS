@@ -379,7 +379,7 @@ void Module :: changePIN(int accNo){
 int menu(){
     int ch;
 
-    cout<< "Transaction Options"<<endl<<endl;
+    cout<< "TRANSACTION OPTIONS"<<endl<<endl;
     cout<< "1.) BALANCE INQUIRY"<<endl;
     cout<< "2.) WITHDRAW"<<endl;
     cout<< "3.) DEPOSIT"<<endl;
