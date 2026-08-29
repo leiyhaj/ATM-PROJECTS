@@ -56,11 +56,11 @@ class Module{
 int Module :: generateAccNo(){
     srand(time(0));
 
-    x = 10000 //Start
-    y = 99999 //End
-    accNo = x + rand() % (y - x + 1);
+    int x = 10000; //Start
+    int y = 99999; //End
+    int accountnum = x + rand() % (y - x + 1);
 
-    return accNo;
+    return accountnum;
 }
 
 void Module :: Enrollment(){
@@ -113,6 +113,45 @@ int menu(){
 }
 
 int main(){
+    Module M;
+
+    while(1){
+        switch(menu()){
+
+        case 1:
+
+            break;
+
+        case 2:
+
+            break;
+
+        case 3:
+
+            break;
+
+        case 4:
+
+            break;
+
+        case 5:
+
+            break;
+
+        case 6:
+            cout<<"Thank you for Banking with us!"<<endl;
+            cout<<"Please remove your card!"<<endl<<endl;
+            system("pause");
+            exit(0);
+            break;
+
+        default:
+            cout<<"Invalid Choice! Please choose again."<<endl<<endl;
+            system("pause");
+            break;
+        }
+    }
+
 
     return 0;
 }
