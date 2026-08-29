@@ -3,21 +3,46 @@
 #include <iomanip>
 #include <fstream>
 #include <sstream>
-
 using namespace std;
 
-const string fn="database.csv";
+#define MAX 100
+#define MIN_ACC_NO 10000
+#define MAX_ACC_NO 99999
+#define encrypt_key 3
+#define MIN_DEPOSIT 5000
+const string fileName = "database.csv";
+const string cardFile = "pin.code";
+
+
 
 struct Account{
-    int accNo, initialDeposit;
-    string name, birthday, contact, pinCode;
+    int accNo;
+    double balance;
+    string accName, birthday, contact, pin;
 };
 
 class Module{
     private:
-        void encryption();
+        Account data[MAX];
+        int last;
+        string currentCard;
+        int generateAccNo(); // pang generate ng random acc number
+        void makenull();
+        bool isFull();
+        bool isEmpty();
+        int locate(int accNo);
         void save();
         void retrieve();
+
+        // Para sa encrytion keneme
+        string encryptPIN(string pin);
+        string decryptPIN(string pin);
+        string generatePin();
+
+        // Sa flash drive naman to
+        void writeCard(const Account &acc, string drivePATH);
+        bool readCard(string drivePATH, int &accNo, string &pin);
+
     public:
         void Enrollment();
         void Balcheck();
@@ -51,10 +76,6 @@ void Module :: changePIN(){
 
 }
 
-void Module :: encryption(){
-
-}
-
 void Module :: save(){
 
 }
@@ -66,14 +87,15 @@ void Module :: retrieve(){
 int menu(){
     int ch;
 
-    cout<<"Transaction Options"<<endl<<endl;
-    cout<<"1.) Balance Inquiry"<<endl;
-    cout<<"2.) Withdraw"<<endl;
-    cout<<"3.) Deposit"<<endl;
-    cout<<"4.) Transfer"<<endl;
-    cout<<"5.) Change PIN"<<endl<<endl;
+    cout<< "Transaction Options"<<endl<<endl;
+    cout<< "1.) Balance Inquiry"<<endl;
+    cout<< "2.) Withdraw"<<endl;
+    cout<< "3.) Deposit"<<endl;
+    cout<< "4.) Transfer"<<endl;
+    cout<< "5.) Change PIN"<<endl;
+    cout << "6.) EXIT" << endl;
 
-    cout<<"Enter your Choice (1-5): ";
+    cout<<"Enter your Choice (1-6): ";
     cin>> ch;
 
     return ch;
