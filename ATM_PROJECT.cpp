@@ -99,12 +99,12 @@ int menu(){
     int ch;
 
     cout<< "Transaction Options"<<endl<<endl;
-    cout<< "1.) Balance Inquiry"<<endl;
-    cout<< "2.) Withdraw"<<endl;
-    cout<< "3.) Deposit"<<endl;
-    cout<< "4.) Transfer"<<endl;
-    cout<< "5.) Change PIN"<<endl;
-    cout << "6.) EXIT" << endl;
+    cout<< "1.) BALANCE INQUIRY"<<endl;
+    cout<< "2.) WITHDRAW"<<endl;
+    cout<< "3.) DEPOSIT"<<endl;
+    cout<< "4.) TRANSFER"<<endl;
+    cout<< "5.) CHANGE PIN"<<endl;
+    cout<< "6.) EXIT" <<endl;
 
     cout<<"Enter your Choice (1-6): ";
     cin>> ch;
