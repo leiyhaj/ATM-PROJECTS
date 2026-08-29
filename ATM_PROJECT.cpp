@@ -28,7 +28,7 @@ class Module{
 };
 
 void Module :: Enrollment(){
-    cout << "Hello world";
+
 }
 
 void Module :: Balcheck(){
@@ -63,6 +63,21 @@ void Module :: retrieve(){
 
 }
 
+int menu(){
+    int ch;
+
+    cout<<"Transaction Options"<<endl<<endl;
+    cout<<"1.) Balance Inquiry"<<endl;
+    cout<<"2.) Withdraw"<<endl;
+    cout<<"3.) Deposit"<<endl;
+    cout<<"4.) Transfer"<<endl;
+    cout<<"5.) Change PIN"<<endl<<endl;
+
+    cout<<"Enter your Choice (1-5): ";
+    cin>> ch;
+
+    return ch;
+}
 
 int main(){
 
