@@ -9,8 +9,8 @@ using namespace std;
 const string fn="database.csv";
 
 struct Account{
-    int AccNo, InitialDeposit;
-    string Name, Birthday, Contact, Pin code;
+    int accNo, initialDeposit;
+    string name, birthday, contact, pinCode;
 };
 
 class Module{
@@ -28,7 +28,7 @@ class Module{
 };
 
 void Module :: Enrollment(){
-
+    cout << "Hello world";
 }
 
 void Module :: Balcheck(){
