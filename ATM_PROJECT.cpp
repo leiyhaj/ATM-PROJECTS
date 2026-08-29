@@ -29,6 +29,8 @@ class Module{
 
 void Module :: Enrollment(){
     cout << "Hello world";
+    cout << "Hello world";
+    cout << "Hello world";
 }
 
 void Module :: Balcheck(){
