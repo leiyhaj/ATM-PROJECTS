@@ -30,8 +30,6 @@ class Module{
         bool isFull();
         bool isEmpty();
         int locate(int accNo);
-        void save();
-        void retrieve();
 
         // Para sa encrytion keneme
         string encryptPIN(string pin);
@@ -39,7 +37,7 @@ class Module{
         string generatePin();
 
         // Sa flash drive naman to
-        void writeCard(const Account &acc, string drivePATH);
+        bool writeCard(const Account &acc, string drivePATH);
         bool readCard(string drivePATH, int &accNo, string &pin);
 
     public:
@@ -58,6 +56,9 @@ class Module{
         string inputPin(string prompt);
         string inputDriveLetter();
         int flashDriveDetector(string drive[]);
+        // File Handling
+        void save();
+        void retrieve();
 };
 
 int Module :: generateAccNo(){
@@ -497,7 +498,7 @@ void Module :: changePIN(int accNo){
         cout<<"Invalid PIN!"<<endl<<"Please Try Again!"<<endl<<endl;
         system("pause");
     }else{
-        newPIN = inputpin("Enter Your New PIN: ");
+        newPIN = inputPin("Enter Your New PIN: ");
     }
 }
 
