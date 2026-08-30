@@ -44,8 +44,8 @@ class Module{
 
     public:
         // Account Modules
-        int login();
-        void Enrollment();
+        int login(int accNo);
+        void Enrollment(string drivePATH);
         // Transaction Modules
         void Balcheck(int accNo);
         void Withdraw(int accNo);
@@ -328,26 +328,25 @@ string Module::generatePin() {
     return pin;
 }
 
-int Module :: login(){
-    string PIN, line;
-    int accidx;
-
-    system("cls");
-
-    PIN = inputPin("Enter your PIN: ");
-
-    PIN = encryptPIN(PIN);
-
-    for(int i = 0; i<=last ; i++){
-        if(data[i].pin == PIN){
-            accidx = data[i].accNo;
-            return accidx;
+int Module :: login(int accNo){
+    string PIN;
+   int position = locate(accNo);
+        if (position == -1){
+            cout<<"Card is invalid! No matching data found!"<<endl;
+            system("pause");
+            exit(0);
         }
-    }
-    return -1;
+
+        string PINinput = inputPin("Enter your PIN: ");
+        string Encryptedinput = encryptPIN(PINinput);
+
+        if(data[position].pin == PIN){
+            return accNo;
+        }
+        return -1;
 }
 
-void Module :: Enrollment(){
+void Module :: Enrollment(string drivePATH){
     system("cls");
     if (isFull()) {
         cout << "Registration failed. Maximum number of account has been reached!" << endl;
@@ -402,7 +401,6 @@ void Module :: Enrollment(){
     cout << "Please remember this PIN!" << endl << endl;
 
     cout << "Insert your flash drive to save it as your ATM card." << endl;
-    string drivePATH = inputDriveLetter();
 
     if(!writeCard(newAcc, drivePATH)) {
         cout << "Registration cancelled. No account was created!" << endl;
@@ -463,7 +461,7 @@ void Module :: Deposit(int accNo){
 }
 
 void Module :: transfer(int accNo){
-    int position, amount, transferee;
+    int position,psttrans, amount, transferee;
 
     cout<<"TRANSFER"<<endl<<endl;
     cout<<"Input Account number to transfer to: ";
@@ -522,39 +520,72 @@ int menu(){
 
 int main(){
     Module M;
-    Account A;
+    M.retrieve();
 
+    system("cls");
 
-    while(1){
+    cout<<"Please insert your card."<<endl;
+    string drivePATH = M.inputDriveLetter();
+
+    int accNo;
+    string cardPIN;
+    bool dataexists = M.readCard(drivePATH, accNo, cardPIN);
+    int loggedinAcc = -1;
+
+    if(!dataexists){
+        char ch;
+        cout<<"Card is not enrolled!"<<endl;
+        cout<<"Would you like to enroll your card? (y/n): ";
+        cin>>ch;
+        if(ch == 'y' || ch == 'Y'){
+            cout<<"Proceeding to enrollment...."<<endl<<endl;
+            system("pause");
+            M.Enrollment(drivePATH);
+            return 0;
+        }else{
+            cout<<"Thank you for using this machine!";
+            system("pause");
+            exit(0);
+        }
+    }else{
+        loggedinAcc = M.login(accNo);
+
+        if(loggedinAcc = -1){
+            cout<<"Invalid PIN!. Please try again."<<endl;
+            system("pause");
+            return;
+        }
+
+        while(1){
         switch(menu()){
 
         case 1:
             system("cls");
-            M.Balcheck(A.accNo);
+            M.Balcheck(loggedinAcc);
             M.save();
             break;
 
         case 2:
             system("cls");
-            M.Withdraw(A.accNo);
+            M.Withdraw(loggedinAcc);
             M.save();
             break;
 
         case 3:
             system("cls");
-            M.Deposit(A.accNo);
+            M.Deposit(loggedinAcc);
             M.save();
             break;
 
         case 4:
             system("cls");
-            M.transfer(A.accNo);
+            M.transfer(loggedinAcc);
             M.save();
             break;
 
         case 5:
             system("cls");
-            M.changePIN(A.accNo);
+            M.changePIN(loggedinAcc);
             M.save();
             break;
 
@@ -571,7 +602,7 @@ int main(){
             break;
         }
     }
-
+}
 
     return 0;
 }
