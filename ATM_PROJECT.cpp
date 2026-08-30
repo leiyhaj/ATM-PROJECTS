@@ -70,7 +70,7 @@ int Module :: generateAccNo(){
     return accountnum;
 }
 
-int inputInt(string prompt) {
+int Module :: inputInt(string prompt) {
     int value;
     while (true) {
         cout << prompt;
@@ -87,7 +87,7 @@ int inputInt(string prompt) {
     }
 }
 
-double inputDouble(string prompt) {
+double Module ::  inputDouble(string prompt) {
     double value;
     while(true) {
         cout << prompt;
@@ -104,7 +104,7 @@ double inputDouble(string prompt) {
     }
 }
 
-string inputPin(string prompt) {
+string Module :: inputPin(string prompt) {
     string pin;
     bool valid;
 
@@ -169,7 +169,7 @@ bool Module::readCard(string drivePATH, int &accNo, string &pin) {
     return true;
 }
 
-string inputDriveLetter() {
+string Module :: inputDriveLetter() {
     string drives[26];  //26 kasi yung letter sa alphabet
     int driveCount = flashDriveDetector(drives);
 
@@ -215,7 +215,7 @@ string inputDriveLetter() {
     return input;
 }
 
-int flashDriveDetector (string drive[]) {
+int Module :: flashDriveDetector (string drive[]) {
     int count = 0;
     DWORD driveMask = GetLogicalDrives();   // yung DWORD same idea lang sa unsigned int
     for (int i = 0; i < 26; i++) {
