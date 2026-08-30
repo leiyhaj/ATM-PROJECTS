@@ -4,15 +4,15 @@
 #include <fstream>
 #include <sstream>
 #include <cstdlib>
+#include <filesystem>
+#include <windows.h>
 using namespace std;
 
 #define MAX 100
 #define encrypt_key 3
 #define MIN_DEPOSIT 5000
 const string fileName = "database.csv";
-const string cardFile = "pin.code";
-
-
+const string cardFile = "pin.txt";
 
 struct Account{
     int accNo;
