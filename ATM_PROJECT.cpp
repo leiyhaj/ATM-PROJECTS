@@ -268,8 +268,8 @@ void Module::save() {
 
 void Module::retrieve() {
     ifstream fp(fileName);
-    if (!fp) {
-        cout << "No registered account!" << endl;
+    if (!fp){
+        cout << "There are no registered accounts!" << endl;
         system("pause");
         return;
     }
@@ -348,6 +348,7 @@ int Module :: login(int accNo){
 
 void Module :: Enrollment(string drivePATH){
     system("cls");
+
     if (isFull()) {
         cout << "Registration failed. Maximum number of account has been reached!" << endl;
         system("pause");
@@ -358,7 +359,7 @@ void Module :: Enrollment(string drivePATH){
 
     do{
     newAcc.accNo = generateAccNo();
-    }while(locate(newAcc.accNo)!=0);
+    }while(locate(newAcc.accNo)!= -1);
 
     cout << "\t=== NEW ACCOUNT REGISTRATION ===" << endl;
     cout << "Assigned Account Number: " << newAcc.accNo << endl << endl;
