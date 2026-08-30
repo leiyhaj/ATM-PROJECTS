@@ -3,6 +3,8 @@
 #include <iomanip>
 #include <fstream>
 #include <sstream>
+#include <filesystem>
+#include <windows.h>
 using namespace std;
 
 #define MAX 100
@@ -54,8 +56,38 @@ class Module{
 
 
 // Input checker
+int inputInt(string prompt);
 double inputDouble(string prompt);
+string inputPin(string prompt);
 string inputDriveLetter();
+int flashDriveDetector(string drive[]);
+
+int inputInt(string prompt) {
+    int value;
+    while (true) {
+        cout << prompt;
+        cin >> value;
+        if (cin.fail()) {
+            cin.clear();
+            cin.ignore(1000, '\n');
+            cout << "Invalid input. Please enter a whole number!" << endl;
+        }
+        else {
+            cin.ignore(1000, '\n');
+            return value;
+        }
+    }
+}
+
+int Module :: generateAccNo(){
+    srand(time(0));
+
+    int x = 10000; //Start
+    int y = 99999; //End
+    int accountnum = x + rand() % (y - x + 1);
+
+    return accountnum;
+}
 
 double inputDouble(string prompt) {
     double value;
@@ -74,31 +106,92 @@ double inputDouble(string prompt) {
     }
 }
 
+string inputPin(string prompt) {
+    string pin;
+    bool valid;
+    
+    do {
+        cout << prompt;
+        getline(cin, pin);
+        valid = true;
+        if (pin.length() < 4 || pin.length() > 6) {
+            valid = false;
+            cout << "PIN must be at least 4 to 6 digits only!" << endl;
+        }
+        else {
+            for (int i = 9; i < (int)pin.length(); i++) {
+                if (!isdigit(pin[i])) {
+                    valid = false;
+                    cout << "PIN must contain digits only!" << endl;
+                    break;
+                }
+            }
+        }
+    } while (!valid);
+    return pin;
+}
+
 string inputDriveLetter() {
+    string drives[26];  //26 kasi yung letter sa alphabet
+    int driveCount = flashDriveDetector(drives);
+
+    //  check nya muna if may flash drive ka, then bibigyan ka option. 
+    //  If 1 pinili mo, then sa mismong flash drive na sya mag write no need to type it manually.
+    //  If 2 naman, type mo sya manually
+    if (driveCount > 0) {
+        cout << "Detected flash drive(s): " << endl;
+        for (int i = 0; i < driveCount; i++) {
+            cout << i+1 << ". " << drives[i] << endl;
+        }
+        cout << driveCount + 1 << ". Type a location manually" << endl;
+
+        int  choice = inputInt("Select an option: ");
+        if (choice >= 1 && choice <= driveCount) {
+            return drives[choice - 1];
+        }
+    }
+    else {
+        cout << "No Flash Drive detected!" << endl;
+    }
+
+    // mapupunta lang dito if wala na detect na flash drive, meaning ikaw mismo mag t-type ng folder path
     string input;
     bool valid;
-
     do {
         cout << "Enter drive letter or folder path for your card" << endl;
-        cout << ("(e.g C for a real flash drive, or C:\\ATMCard\\ if no flash drive): ");
+        cout << "(e.g. C for a real flash drive, or C:\\ATM_CARD\\ for folder path): ";
         getline(cin, input);
         valid = !input.empty();
         if (!valid) {
-            cout << "This cannot be blank!" << endl;
+            cout << "Input cannot be blank!" << endl;
         }
-    } while (!valid);
-    
-    // yung single letter C ay = E:\  .
-    // then pag hindi na sya single letter, treated na sya as folder path
-    if(input.length() == 1 && isalpha(input[0])) {
+    }   while (!valid);
+
+    if (input.length() == 1 && isalpha(input[0])) {
         return input + ":\\";
     }
-
-    char lastleter = input[input.length() - 1];
-    if (lastleter != '\\' && lastleter != '/') {
+    char lastLetter = input[input.length() - 1];
+    if (lastLetter != '\\' && lastLetter != '/') {
         input = input + "\\";
     }
     return input;
+}
+
+int flashDriveDetector (string drive[]) {
+    int count = 0;
+    DWORD driveMask = GetLogicalDrives();   // yung DWORD same idea lang sa unsigned int
+    for (int i = 0; i < 26; i++) {
+        if (driveMask & (1 << i)) {
+            char letter = (char)('A' + i);
+            string path = string(1, letter) + ":\\";
+            UINT type = GetDriveTypeA(path.c_str()); // para malaman anong type ng drive yun, e.g hard disk, usb drive, etc.
+            if (type == DRIVE_REMOVABLE) {
+                drive[count] = path;
+                count++;
+            }
+        }
+    }
+    return count;
 }
 
 void Module::makenull() {
@@ -195,6 +288,46 @@ string Module::generatePin() {
         pin = pin + (char)('0' + rand() % 10);
     }
     return pin;
+}
+
+bool Module::writeCard(const Account &acc, string drivePATH) {
+    ofstream card((drivePATH + cardFile).c_str());
+    if (!card) {
+        cout << "Unable to write to the flash drive. Please try again later!" << endl;
+        return false;
+    }
+    card << acc.accNo << "," << encryptPIN(acc.pin) << endl;
+    card.close();
+    cout << "ATM card saved to drive " << drivePATH << endl;
+    return true;
+}
+
+bool Module::readCard(string drivePATH, int &accNo, string &pin) {
+    if (!filesystem::exists(drivePATH)) {
+        cout << "Drive not found. Please try again later!" << endl;
+        return false;
+    }
+
+    ifstream card((drivePATH + cardFile).c_str());
+    if (!card) {
+        return false;
+    }
+
+    string line;
+    getline(card, line);
+    card.close();
+    if (line.empty()) {
+        return false;
+    }
+
+    stringstream ss(line);
+    string converter;
+    getline(ss, converter, ',');
+    accNo = atoi(converter.c_str());
+    getline(ss, converter, ',');
+    pin = decryptPIN(converter);
+
+    return true;
 }
 
 void Module :: Enrollment(){
