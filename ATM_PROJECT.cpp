@@ -36,10 +36,6 @@ class Module{
         string decryptPIN(string pin);
         string generatePin();
 
-        // Sa flash drive naman to
-        bool writeCard(const Account &acc, string drivePATH);
-        bool readCard(string drivePATH, int &accNo, string &pin);
-
     public:
         // Account Modules
         int login(int accNo);
@@ -59,6 +55,9 @@ class Module{
         // File Handling
         void save();
         void retrieve();
+        // Sa flash drive naman to
+        bool writeCard(const Account &acc, string drivePATH);
+        bool readCard(string drivePATH, int &accNo, string &pin);
 };
 
 int Module :: generateAccNo(){
@@ -359,7 +358,7 @@ void Module :: Enrollment(string drivePATH){
 
     do{
     newAcc.accNo = generateAccNo();
-    }while(locate(NewAcc.accNo)!=0);
+    }while(locate(newAcc.accNo)!=0);
 
     cout << "\t=== NEW ACCOUNT REGISTRATION ===" << endl;
     cout << "Assigned Account Number: " << newAcc.accNo << endl << endl;
@@ -554,7 +553,7 @@ int main(){
         if(loggedinAcc = -1){
             cout<<"Invalid PIN!. Please try again."<<endl;
             system("pause");
-            return;
+            return 0;
         }
 
         while(1){
