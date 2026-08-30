@@ -37,6 +37,8 @@ class Module{
         string generatePin();
 
     public:
+        // Initialze last to -1
+        Module() {makenull();}
         // Account Modules
         int login(int accNo);
         void Enrollment(string drivePATH);
@@ -338,9 +340,8 @@ int Module :: login(int accNo){
         }
 
         string PINinput = inputPin("Enter your PIN: ");
-        string Encryptedinput = encryptPIN(PINinput);
 
-        if(data[position].pin == Encryptedinput){
+        if(data[position].pin == PINinput){
             return accNo;
         }
         return -1;
@@ -400,8 +401,7 @@ void Module :: Enrollment(string drivePATH){
     newAcc.pin = generatePin();
     cout << endl << "Your assigned PIN code is: " << newAcc.pin << endl;
     cout << "Please remember this PIN!" << endl << endl;
-
-    cout << "Insert your flash drive to save it as your ATM card." << endl;
+    system("pause");
 
     if(!writeCard(newAcc, drivePATH)) {
         cout << "Registration cancelled. No account was created!" << endl;
@@ -485,7 +485,7 @@ void Module :: transfer(int accNo){
         system("pause");
     }else{
         data[position].balance -= amount;
-        data[position].balance += amount;
+        data[psttrans].balance += amount;
         cout<<"Successfully Transferred!"<<endl;
         system("pause");
     }
@@ -530,7 +530,6 @@ int menu(){
 int main(){
     Module M;
     M.retrieve();
-
     system("cls");
 
     cout<<"Please insert your card."<<endl;
@@ -539,7 +538,7 @@ int main(){
     int accNo;
     string cardPIN;
     bool dataexists = M.readCard(drivePATH, accNo, cardPIN);
-    int loggedinAcc == -1;
+    int loggedinAcc = -1;
 
     if(!dataexists){
         system("cls");
@@ -560,7 +559,7 @@ int main(){
     }else{
         loggedinAcc = M.login(accNo);
 
-        if(loggedinAcc = -1){
+        if(loggedinAcc == -1){
             cout<<"Invalid PIN!. Please try again."<<endl;
             system("pause");
             return 0;
