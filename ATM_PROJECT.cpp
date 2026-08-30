@@ -44,8 +44,9 @@ class Module{
 
     public:
         // Account Modules
-        void login();
+        int login();
         void Enrollment();
+        // Transaction Modules
         void Balcheck(int accNo);
         void Withdraw(int accNo);
         void Deposit(int accNo);
@@ -126,6 +127,46 @@ string inputPin(string prompt) {
         }
     } while (!valid);
     return pin;
+}
+
+bool Module::writeCard(const Account &acc, string drivePATH) {
+    ofstream card((drivePATH + cardFile).c_str());
+    if (!card) {
+        cout << "Unable to write to the flash drive. Please try again later!" << endl;
+        return false;
+    }
+    card << acc.accNo << "," << encryptPIN(acc.pin) << endl;
+    card.close();
+    cout << "ATM card saved to drive " << drivePATH << endl;
+    return true;
+}
+
+bool Module::readCard(string drivePATH, int &accNo, string &pin) {
+    if (!filesystem::exists(drivePATH)) {
+        cout << "Drive not found. Please try again later!" << endl;
+        return false;
+    }
+
+    ifstream card((drivePATH + cardFile).c_str());
+    if (!card) {
+        return false;
+    }
+
+    string line;
+    getline(card, line);
+    card.close();
+    if (line.empty()) {
+        return false;
+    }
+
+    stringstream ss(line);
+    string converter;
+    getline(ss, converter, ',');
+    accNo = atoi(converter.c_str());
+    getline(ss, converter, ',');
+    pin = decryptPIN(converter);
+
+    return true;
 }
 
 string inputDriveLetter() {
@@ -287,15 +328,23 @@ string Module::generatePin() {
     return pin;
 }
 
-void Module :: login(){
-    ifstream fp(fileName);
-    string PIN;
+int Module :: login(){
+    string PIN, line;
+    int accidx;
 
     system("cls");
 
     PIN = inputPin("Enter your PIN: ");
 
-    while
+    PIN = encryptPIN(PIN);
+
+    for(int i = 0; i<=last ; i++){
+        if(data[i].pin == PIN){
+            accidx = data[i].accNo;
+            return accidx;
+        }
+    }
+    return -1;
 }
 
 void Module :: Enrollment(){
@@ -474,6 +523,7 @@ int menu(){
 int main(){
     Module M;
     Account A;
+
 
     while(1){
         switch(menu()){
