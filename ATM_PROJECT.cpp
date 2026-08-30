@@ -451,6 +451,7 @@ void Module :: changePIN(int accNo){
         system("pause");
     }else{
         newPIN = inputpin("Enter Your New PIN: ");
+    }
 }
 
 int menu(){
