@@ -334,13 +334,13 @@ int Module :: login(int accNo){
         if (position == -1){
             cout<<"Card is invalid! No matching data found!"<<endl;
             system("pause");
-            exit(0);
+            return -1;
         }
 
         string PINinput = inputPin("Enter your PIN: ");
         string Encryptedinput = encryptPIN(PINinput);
 
-        if(data[position].pin == PIN){
+        if(data[position].pin == Encryptedinput){
             return accNo;
         }
         return -1;
@@ -428,63 +428,70 @@ void Module :: Balcheck(int accNo){
 }
 
 void Module :: Withdraw(int accNo){
-    int position, amount;
+    int position;
+    double amount;
 
     position = locate(accNo);
 
     cout<<"WITHDRAW"<<endl<<endl;
-    cout<<"Enter Amount to withdraw: ";
-    cin>>amount;
+    amount = inputDouble("Enter Amount to withdraw: ");
+
 
     if(amount>data[position].balance){
         cout<<"Insufficient Balance!"<<endl;
         system("pause");
     }else{
-     data[position].balance = data[position].balance - amount;
+     data[position].balance -= amount;
      cout<<"Withdraw Successful!"<<endl;
      system("pause");
     }
 }
 
 void Module :: Deposit(int accNo){
-    int position, amount;
+    int position;
+    double amount;
 
     position = locate(accNo);
 
     cout<<"DEPOSIT"<<endl<<endl;
-    cout<<"Enter Amount to deposit: ";
-    cin>>amount;
+    amount = inputDouble("Enter Amount to deposit: ");
 
-    data[position].balance = amount + data[position].balance;
+    data[position].balance += amount;
 
     cout<<"Successfully Deposited!"<<endl;
     system("pause");
 }
 
 void Module :: transfer(int accNo){
-    int position,psttrans, amount, transferee;
+    int position,psttrans, transferee;
+    double amount;
 
     cout<<"TRANSFER"<<endl<<endl;
     cout<<"Input Account number to transfer to: ";
     cin>>transferee;
 
+    amount = inputDouble("Enter amount to transfer: ");
+
     position = locate(accNo);
     psttrans = locate(transferee);
+
+    if(data[position].balance<amount){
+        cout<<"Insufficient Balance!"<<endl;
+        system("pause");
+    }
 
     if(psttrans == -1){
         cout<<"Account not found!"<<endl<<"Please input a valid account number."<<endl;
         system("pause");
     }else{
-        data[position].balance = data[position].balance - amount;
-        data[psttrans].balance = data[position].balance + amount;
+        data[position].balance -= amount;
+        data[position].balance += amount;
         cout<<"Successfully Transferred!"<<endl;
         system("pause");
     }
 }
 
 void Module :: changePIN(int accNo){
-    int minPIN = 4;
-    int maxPIN = 6;
     int position;
     string newPIN, currPIN;
 
@@ -499,6 +506,7 @@ void Module :: changePIN(int accNo){
         system("pause");
     }else{
         newPIN = inputPin("Enter Your New PIN: ");
+        data[position].pin = newPIN;
     }
 }
 
@@ -531,9 +539,10 @@ int main(){
     int accNo;
     string cardPIN;
     bool dataexists = M.readCard(drivePATH, accNo, cardPIN);
-    int loggedinAcc = -1;
+    int loggedinAcc == -1;
 
     if(!dataexists){
+        system("cls");
         char ch;
         cout<<"Card is not enrolled!"<<endl;
         cout<<"Would you like to enroll your card? (y/n): ";
