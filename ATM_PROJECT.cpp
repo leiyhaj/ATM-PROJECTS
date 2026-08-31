@@ -331,6 +331,7 @@ string Module::generatePin() {
 }
 
 int Module :: login(int accNo){
+    system("cls");
     string PIN;
    int position = locate(accNo);
         if (position == -1){
@@ -424,7 +425,8 @@ void Module :: Balcheck(int accNo){
     position = locate(accNo);
 
     cout<<"BALANCE INQUIRY"<<endl<<endl;
-    cout<<"Your current balance is: "<<fixed<<setprecision(2)<<data[position].balance;
+    cout<<"Your current balance is: "<<fixed<<setprecision(2)<<data[position].balance<<endl<<endl;
+    system("pause");
 }
 
 void Module :: Withdraw(int accNo){
@@ -512,6 +514,7 @@ void Module :: changePIN(int accNo){
 }
 
 int menu(){
+    system("cls");
     int ch;
 
     cout<< "TRANSACTION OPTIONS"<<endl<<endl;
@@ -558,6 +561,7 @@ int main(){
             system("pause");
             exit(0);
         }
+    }
 
         int attempts = 0;
 
@@ -627,7 +631,5 @@ int main(){
             break;
         }
     }
-}
-
     return 0;
 }
