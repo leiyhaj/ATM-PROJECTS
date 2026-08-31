@@ -500,6 +500,7 @@ void Module :: changePIN(int accNo){
     cout<<"CHANGE PIN"<<endl<<endl;
     cout<<"Enter Current PIN: ";
     cin>> currPIN;
+    cin.ignore(1000, '\n');
 
     if(currPIN!=data[position].pin){
         cout<<"Invalid PIN!"<<endl<<"Please Try Again!"<<endl<<endl;
@@ -546,6 +547,7 @@ int main(){
         cout<<"Card is not enrolled!"<<endl;
         cout<<"Would you like to enroll your card? (y/n): ";
         cin>>ch;
+        cin.ignore(1000, '\n');
         if(ch == 'y' || ch == 'Y'){
             cout<<"Proceeding to enrollment...."<<endl<<endl;
             system("pause");
@@ -556,11 +558,25 @@ int main(){
             system("pause");
             exit(0);
         }
-    }else{
-        loggedinAcc = M.login(accNo);
+
+        int attempts = 0;
+
+        while(attempts < 3){
+            loggedinAcc = M.login(accNo);
+
+            if(loggedinAcc != -1){
+                cout<<"Log-in Successful!"<<endl;
+                system("pause");
+                break;
+            }
+
+            attempts++;
+            cout<<"Invalid PIN! "<<(3-attempts)<<" Attempts Remaining!"<<endl;
+            system("pause");
+        }
 
         if(loggedinAcc == -1){
-            cout<<"Invalid PIN!. Please try again."<<endl;
+            cout<<"Too many failed attempts! Returning card..."<<endl;
             system("pause");
             return 0;
         }
