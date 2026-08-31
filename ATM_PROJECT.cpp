@@ -555,7 +555,7 @@ int main(){
             cout<<"Proceeding to enrollment...."<<endl<<endl;
             system("pause");
             M.Enrollment(drivePATH);
-            return 0;
+            dataexists = M.readCard(drivePATH, accNo, cardPIN);
         }else{
             cout<<"Thank you for using this machine!";
             system("pause");
