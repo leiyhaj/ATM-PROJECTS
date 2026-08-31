@@ -575,7 +575,7 @@ int main(){
             }
 
             attempts++;
-            cout<<"Invalid PIN! "<<(3-attempts)<<" Attempts Remaining!"<<endl;
+            cout<<"Invalid PIN! "<<(3-attempts)<<" Attempts Remaining!"<<endl<<endl;
             system("pause");
         }
 
