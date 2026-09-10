@@ -52,8 +52,7 @@ class Module{
         int inputInt(string prompt);
         double inputDouble(string prompt);
         string inputPin(string prompt);
-        string inputDriveLetter();
-        int flashDriveDetector(string drive[]);
+        string flashDriveDetector();
         // File Handling
         void save();
         void retrieve();
@@ -171,67 +170,24 @@ bool Module::readCard(string drivePATH, int &accNo, string &pin) {
     return true;
 }
 
-string Module :: inputDriveLetter() {
-    string drives[26];  //26 kasi yung letter sa alphabet
-    int driveCount = flashDriveDetector(drives);
-
-    //  check nya muna if may flash drive ka, then bibigyan ka option.
-    //  If 1 pinili mo, then sa mismong flash drive na sya mag write no need to type it manually.
-    //  If 2 naman, type mo sya manually
-    if (driveCount > 0) {
-        cout << "Detected flash drive(s): " << endl;
-        for (int i = 0; i < driveCount; i++) {
-            cout << i+1 << ". " << drives[i] << endl;
-        }
-        cout << driveCount + 1 << ". Type a location manually" << endl;
-
-        int  choice = inputInt("Select an option: ");
-        if (choice >= 1 && choice <= driveCount) {
-            return drives[choice - 1];
-        }
-    }
-    else {
-        cout << "No Flash Drive detected!" << endl;
-    }
-
-    // mapupunta lang dito if wala na detect na flash drive, meaning ikaw mismo mag t-type ng folder path
-    string input;
-    bool valid;
-    do {
-        cout << "Enter drive letter or folder path for your card" << endl;
-        cout << "(e.g. C for a real flash drive, or C:\\ATM_CARD\\ for folder path): ";
-        getline(cin, input);
-        valid = !input.empty();
-        if (!valid) {
-            cout << "Input cannot be blank!" << endl;
-        }
-    }   while (!valid);
-
-    if (input.length() == 1 && isalpha(input[0])) {
-        return input + ":\\";
-    }
-    char lastLetter = input[input.length() - 1];
-    if (lastLetter != '\\' && lastLetter != '/') {
-        input = input + "\\";
-    }
-    return input;
-}
-
-int Module :: flashDriveDetector (string drive[]) {
-    int count = 0;
+string Module :: flashDriveDetector () {
+    while(true){
     DWORD driveMask = GetLogicalDrives();   // yung DWORD same idea lang sa unsigned int
     for (int i = 0; i < 26; i++) {
         if (driveMask & (1 << i)) {
             char letter = (char)('A' + i);
             string path = string(1, letter) + ":\\";
             UINT type = GetDriveTypeA(path.c_str()); // para malaman anong type ng drive yun, e.g hard disk, usb drive, etc.
-            if (type == DRIVE_REMOVABLE) {
-                drive[count] = path;
-                count++;
+            if (type == DRIVE_REMOVABLE){
+                system("cls");
+                cout<<"Card Detected!"<<endl;
+                system("pause");
+                return path;
             }
         }
     }
-    return count;
+    Sleep(500);
+}
 }
 
 void Module::makenull() {
@@ -537,7 +493,7 @@ int main(){
     system("cls");
 
     cout<<"Please insert your card."<<endl;
-    string drivePATH = M.inputDriveLetter();
+    string drivePATH = M.flashDriveDetector();
 
     int accNo;
     string cardPIN;
@@ -555,7 +511,7 @@ int main(){
             cout<<"Proceeding to enrollment...."<<endl<<endl;
             system("pause");
             M.Enrollment(drivePATH);
-            return 0;
+            dataexists = M.readCard(drivePATH, accNo, cardPIN);
         }else{
             cout<<"Thank you for using this machine!";
             system("pause");
