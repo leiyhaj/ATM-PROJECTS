@@ -475,7 +475,8 @@ void Module :: changePIN(int accNo){
     }else{
         newPIN = inputPin("Enter Your New PIN: ");
         data[position].pin = newPIN;
-        cout<<"PIN Changed!"<<endl<<endl;
+        cout<<"PIN change successfully!"<<endl;
+        cout << "New PIN: " << newPIN <<endl;
         system("pause");
     }
 }
