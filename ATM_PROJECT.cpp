@@ -118,7 +118,7 @@ string Module :: inputPin(string prompt) {
             cout << "PIN must be at least 4 to 6 digits only!" << endl;
         }
         else {
-            for (int i = 9; i < (int)pin.length(); i++) {
+            for (int i = 0; i < (int)pin.length(); i++) {
                 if (!isdigit(pin[i])) {
                     valid = false;
                     cout << "PIN must contain digits only!" << endl;
@@ -467,9 +467,7 @@ void Module :: changePIN(int accNo){
     position = locate(accNo);
 
     cout<<"=== CHANGE PIN ==="<<endl<<endl;
-    cout<<"Enter Current PIN: ";
-    cin>> currPIN;
-    cin.ignore(1000, '\n');
+    currPIN = inputPin("Enter Current PIN: ");
 
     if(currPIN!=data[position].pin){
         cout<<"Invalid PIN!"<<endl<<"Please Try Again!"<<endl<<endl;
@@ -477,6 +475,8 @@ void Module :: changePIN(int accNo){
     }else{
         newPIN = inputPin("Enter Your New PIN: ");
         data[position].pin = newPIN;
+        cout<<"PIN Changed!"<<endl<<endl;
+        system("pause");
     }
 }
 
@@ -494,6 +494,7 @@ int menu(){
 
     cout<<"Enter your Choice (1-6): ";
     cin>> ch;
+    cin.ignore(1000, '\n');
 
     return ch;
 }
