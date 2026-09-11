@@ -427,19 +427,21 @@ void Module :: transfer(int accNo){
     cout<<"TRANSFER"<<endl<<endl;
     cout<<"Input Account number to transfer to: ";
     cin>>transferee;
-
-    amount = inputDouble("Enter amount to transfer: ");
-
+    
     position = locate(accNo);
     psttrans = locate(transferee);
+    if(psttrans == -1){
+        cout<<"Account not found!"<<endl<<"Please input a valid account number."<<endl;
+        system("pause");
+        return;
+    }
+    
+    amount = inputDouble("Enter amount to transfer: ");
+
+    
 
     if(data[position].balance<amount){
         cout<<"Insufficient Balance!"<<endl;
-        system("pause");
-    }
-
-    if(psttrans == -1){
-        cout<<"Account not found!"<<endl<<"Please input a valid account number."<<endl;
         system("pause");
     }else{
         data[position].balance -= amount;
