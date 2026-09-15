@@ -62,8 +62,6 @@ class Module{
 };
 
 int Module :: generateAccNo(){
-    srand(time(0));
-
     int x = 10000; //Start
     int y = 99999; //End
     int accountnum = x + rand() % (y - x + 1);
@@ -502,6 +500,7 @@ int menu(){
 int main(){
     Module M;
     M.retrieve();
+    srand(time(0));
     system("cls");
 
     cout<<"Please insert your card."<<endl;
