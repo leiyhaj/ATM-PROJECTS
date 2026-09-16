@@ -12,7 +12,7 @@ using namespace std;
 #define encrypt_key 3
 #define MIN_DEPOSIT 5000
 const string fileName = "database.csv";
-const string cardFile = "pin.txt";
+const string cardFile = "pin.code";
 
 struct Account{
     int accNo;
@@ -213,6 +213,10 @@ int Module::locate(int accNo){
 
 void Module::save() {
     ofstream fp(fileName);
+    if(!fp) {
+        cout << "Filename not FOUND!" << endl;
+        return;
+    }
     for (int i = 0; i <= last; i++){
         fp << data[i].accName << ","
             << data[i].accNo << ","
@@ -448,7 +452,7 @@ void Module :: transfer(int accNo){
     if(data[position].balance<amount){
         cout<<"Insufficient Balance!"<<endl;
         system("pause");
-    }else if(amount>0){
+    }else if(amount <= 0){
         cout<<"Invalid Amount!"<<endl;
         system("pause");
     }else{
