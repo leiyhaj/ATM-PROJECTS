@@ -64,8 +64,6 @@ class Module{
 };
 
 int Module :: generateAccNo(){
-    srand(time(0));
-
     int x = 10000; //Start
     int y = 99999; //End
     int accountnum = x + rand() % (y - x + 1);
@@ -471,7 +469,10 @@ void Module :: transfer(int accNo){
     psttrans = locate(transferee);
 
     if(psttrans == -1){
-        cout<<"Account not found!"<<endl<<"Please input a valid account number."<<endl;
+        cout<<"Account not found!"<<endl<<"Please input a valid account number."<<endl<<endl;
+        system("pause");
+    }else if (position == psttrans){
+        cout<<"Cannot send to own account!"<<endl<<"Please input a valid account number."<<endl<<endl;
         system("pause");
     }else{
     amount = inputDouble("Enter amount to transfer: ");
@@ -479,7 +480,7 @@ void Module :: transfer(int accNo){
     if(data[position].balance<amount){
         cout<<"Insufficient Balance!"<<endl;
         system("pause");
-    }else if(amount <= 0){
+    }else if(amount < 0){
         cout<<"Invalid Amount!"<<endl;
         system("pause");
     }else{
@@ -547,6 +548,7 @@ int menu(){
 int main(){
     Module M;
     M.retrieve();
+    srand(time(0));
     system("cls");
 
     cout<<"Please insert your card."<<endl;
