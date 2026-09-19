@@ -52,6 +52,8 @@ class Module{
         int inputInt(string prompt);
         double inputDouble(string prompt);
         string inputPin(string prompt);
+        string ValidName(string prompt);
+        bool Validbday(string bday);
         bool isDigit(string s);
         bool isAlpha(string s);
         string flashDriveDetector();
@@ -128,6 +130,62 @@ string Module :: inputPin(string prompt) {
         }
     } while (!valid);
     return pin;
+}
+
+string Module :: ValidName(string prompt){
+    string name;
+    bool valid;
+
+    do{
+        cout<<prompt;
+        getline(cin,name);
+        valid = true;
+
+        if(name.empty()){
+            valid = false;
+            cout<<"Name cannot be empty!"<<endl;
+        }else{
+        bool hasletter = false;
+        for(int i = 0; i<(int)name.length(); i++){
+            char c = name[i];
+            if(isalpha(c)){
+                hasletter = true;
+            }
+            else{
+                valid = false;
+                cout<<"Name has invalid characters. Please input again!"<<endl;
+                break;
+            }
+        }
+    }
+}while(!valid);
+
+    return name;
+}
+
+bool Module :: Validbday(string bday){
+    if(bday.length() != 10 || bday[2] != '/' || bday[5] != '/'){
+        return false;
+    }
+
+    for(int i = 0; i<(int)bday.length(); i++){
+        if(i==2 || i==5) continue;
+        if(!isdigit(bday[i])) return false;
+    }
+
+    int month = stoi(bday.substr(0,2));
+    int day = stoi(bday.substr(3,2));
+    int year = stoi(bday.substr(6,4));
+
+    if(month < 1 || month > 12) return false;
+
+    int daysInMonth[] = {31,28,31,30,31,30,31,31,30,31,30,31};
+    bool leap = (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
+    if (month == 2 && leap) daysInMonth[1] = 29;
+
+    if (day < 1 || day > daysInMonth[month - 1]) return false;
+
+    return true;
 }
 
 bool Module::isDigit(string s) {
@@ -345,24 +403,15 @@ void Module :: Enrollment(string drivePATH){
     cout << "\t=== NEW ACCOUNT REGISTRATION ===" << endl;
     cout << "Assigned Account Number: " << newAcc.accNo << endl << endl;
 
-    do {
-        cout << "Enter Account Name: ";
-        getline(cin, newAcc.accName);
-        if (newAcc.accName.empty()) {
-            cout << "Account name cannot be blank!" << endl;
-        }
-        if (isDigit(newAcc.accName)) {
-            cout << endl << "WARNING: Account name cannot contain digit/s!" << endl << endl;
-        }
-    } while (newAcc.accName.empty() || isDigit(newAcc.accName));
+    newAcc.accName = ValidName("Enter Account Name: ");
 
     do {
         cout << "Enter Birthday (MM/DD/YYYY): ";
         getline(cin, newAcc.birthday);
-        if (newAcc.birthday.empty()) {
-            cout << "Birthday cannot be blank!" << endl;
+        if (!Validbday(newAcc.birthday)) {
+            cout << "Invalid Date. Please input a proper date!" << endl;
         }
-    } while (newAcc.birthday.empty());
+    } while (!Validbday(newAcc.birthday));
 
     do {
         cout << "Enter Contact Number: ";
@@ -462,8 +511,7 @@ void Module :: transfer(int accNo){
     double amount;
 
     cout<<"=== TRANSFER ==="<<endl<<endl;
-    cout<<"Input Account number to transfer to: ";
-    cin>>transferee;
+    transferee = inputInt("Input Account number to transfer to: ");
 
     position = locate(accNo);
     psttrans = locate(transferee);
