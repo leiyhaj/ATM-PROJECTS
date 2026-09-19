@@ -40,7 +40,7 @@ class Module{
         // Initialze last to -1
         Module() {makenull();}
         // Account Modules
-        int login(int accNo);
+        int login(int accNo, string drivePATH);
         void Enrollment(string drivePATH);
         // Transaction Modules
         void Balcheck(int accNo);
@@ -52,6 +52,8 @@ class Module{
         int inputInt(string prompt);
         double inputDouble(string prompt);
         string inputPin(string prompt);
+        bool isDigit(string s);
+        bool isAlpha(string s);
         string flashDriveDetector();
         // File Handling
         void save();
@@ -130,6 +132,24 @@ string Module :: inputPin(string prompt) {
     return pin;
 }
 
+bool Module::isDigit(string s) {
+    for (int i = 0; i < (int)s.length(); i++) {
+        if (isdigit(s[i])) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool Module::isAlpha(string s) {
+    for (int i = 0; i < (int)s.length(); i++) {
+        if (isalpha(s[i])) {
+            return true;
+        }
+    }
+    return false;
+}
+
 bool Module::writeCard(const Account &acc, string drivePATH) {
     ofstream card((drivePATH + cardFile).c_str());
     if (!card) {
@@ -138,7 +158,7 @@ bool Module::writeCard(const Account &acc, string drivePATH) {
     }
     card << acc.accNo << "," << encryptPIN(acc.pin) << endl;
     card.close();
-    cout << "ATM card saved to drive " << drivePATH << endl;
+    cout << "ATM card saved to drive: " << drivePATH << endl;
     return true;
 }
 
@@ -290,10 +310,10 @@ string Module::generatePin() {
     return pin;
 }
 
-int Module :: login(int accNo){
+int Module :: login(int accNo, string drivePATH){
     system("cls");
     string PIN;
-   int position = locate(accNo);
+    int position = locate(accNo);
         if (position == -1){
             cout<<"Card is invalid! No matching data found!"<<endl;
             system("pause");
@@ -303,6 +323,7 @@ int Module :: login(int accNo){
         string PINinput = inputPin("Enter your PIN: ");
 
         if(data[position].pin == PINinput){
+            currentCard = drivePATH;
             return accNo;
         }
         return -1;
@@ -332,7 +353,10 @@ void Module :: Enrollment(string drivePATH){
         if (newAcc.accName.empty()) {
             cout << "Account name cannot be blank!" << endl;
         }
-    } while (newAcc.accName.empty());
+        if (isDigit(newAcc.accName)) {
+            cout << endl << "WARNING: Account name cannot contain digit/s!" << endl << endl;
+        }
+    } while (newAcc.accName.empty() || isDigit(newAcc.accName));
 
     do {
         cout << "Enter Birthday (MM/DD/YYYY): ";
@@ -348,7 +372,10 @@ void Module :: Enrollment(string drivePATH){
         if (newAcc.contact.empty()) {
             cout << "Contact number cannot be blank!" << endl;
         }
-    } while(newAcc.contact.empty());
+        if (isAlpha(newAcc.contact)) {
+            cout << "Contact number cannot contain letter/s" << endl;
+        }
+    } while(newAcc.contact.empty() || isAlpha(newAcc.contact));
 
     double deposit;
     do {
@@ -478,6 +505,13 @@ void Module :: changePIN(int accNo){
         system("pause");
     }else{
         newPIN = inputPin("Enter Your New PIN: ");
+        Account updatedAcc = data[position];
+        updatedAcc.pin = newPIN;
+        if (!writeCard(updatedAcc, currentCard)) {
+            cout << "Unable to update your card. PIN was not changed!" << endl;
+            system("pause");
+            return;
+        }
         data[position].pin = newPIN;
         cout<<"PIN change successfully!"<<endl;
         cout << "New PIN: " << newPIN <<endl;
@@ -488,7 +522,6 @@ void Module :: changePIN(int accNo){
 int menu(){
     system("cls");
     int ch;
-
     cout<< "=== TRANSACTION OPTIONS ==="<<endl<<endl;
     cout<< "1.) BALANCE INQUIRY"<<endl;
     cout<< "2.) WITHDRAW"<<endl;
@@ -496,11 +529,18 @@ int menu(){
     cout<< "4.) TRANSFER"<<endl;
     cout<< "5.) CHANGE PIN"<<endl;
     cout<< "6.) EXIT" <<endl;
-
-    cout<<"Enter your Choice (1-6): ";
-    cin>> ch;
-    cin.ignore(1000, '\n');
-
+    while (true) {
+        cout<<"Enter your Choice (1-6): ";
+        cin>> ch;
+        if (cin.fail()) {
+            cin.clear();
+            cin.ignore(1000, '\n');
+            return ch;
+        } else {
+            cin.ignore(1000, '\n');
+            return ch;
+        }
+    }
     return ch;
 }
 
@@ -539,7 +579,7 @@ int main(){
         int attempts = 0;
 
         while(attempts < 3){
-            loggedinAcc = M.login(accNo);
+            loggedinAcc = M.login(accNo, drivePATH);
 
             if(loggedinAcc != -1){
                 cout<<"Log-in Successful!"<<endl;
