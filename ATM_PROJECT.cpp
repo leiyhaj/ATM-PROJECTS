@@ -416,13 +416,16 @@ void Module :: Enrollment(string drivePATH){
     do {
         cout << "Enter Contact Number: ";
         getline(cin, newAcc.contact);
+        if (newAcc.contact.length() != 11){
+            cout <<"Contact number cannot be lower/higher than 11 digits!"<<endl;
+        }
         if (newAcc.contact.empty()) {
             cout << "Contact number cannot be blank!" << endl;
         }
         if (isAlpha(newAcc.contact)) {
             cout << "Contact number cannot contain letter/s" << endl;
         }
-    } while(newAcc.contact.empty() || isAlpha(newAcc.contact));
+    } while(newAcc.contact.empty() || isAlpha(newAcc.contact) || newAcc.contact.length() != 11);
 
     double deposit;
     do {
@@ -465,15 +468,17 @@ void Module :: Balcheck(int accNo){
 
 void Module :: Withdraw(int accNo){
     int position;
-    double amount;
+    int amount;
 
     position = locate(accNo);
 
     cout<<"=== WITHDRAW ==="<<endl<<endl;
     amount = inputDouble("Enter Amount to withdraw: ");
 
-
-    if(amount>data[position].balance){
+    if(amount%100!=0){
+         cout<<"Amount must be a multiple of 100!"<<endl;
+         system("pause");
+    }else if(amount>data[position].balance){
         cout<<"Insufficient Balance!"<<endl;
         system("pause");
     }else if(amount<0){
@@ -481,7 +486,8 @@ void Module :: Withdraw(int accNo){
         system("pause");
     }else{
      data[position].balance -= amount;
-     cout<<"Withdraw Successful!"<<endl;
+     cout<<"Withdraw Successful!"<<endl<<endl;
+     cout<<"Current Balance: "<<data[position].balance<<endl;
      system("pause");
     }
 }
@@ -502,6 +508,7 @@ void Module :: Deposit(int accNo){
     data[position].balance += amount;
 
     cout<<"Successfully Deposited!"<<endl;
+    cout<<"Current Balance: "<<data[position].balance<<endl;
     system("pause");
     }
 }
@@ -535,6 +542,7 @@ void Module :: transfer(int accNo){
         data[position].balance -= amount;
         data[psttrans].balance += amount;
         cout<<"Successfully Transferred!"<<endl;
+        cout<<"Current Balance: "<<data[position].balance<<endl;
         system("pause");
         }
     }
