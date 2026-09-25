@@ -91,17 +91,22 @@ int Module :: inputInt(string prompt) {
 }
 
 double Module ::  inputDouble(string prompt) {
+    string input;
     double value;
-    while(true) {
+    while (true) {
         cout << prompt;
-        cin >> value;
-        if (cin.fail()) {
-            cin.clear();
-            cin.ignore(1000, '\n');
-            cout << "Invalid input, Please enter avalid amount!" << endl;
+        getline(cin, input);
+        bool valid = true;
+        for (int i = 0; i < (int)input.length(); i++) {
+            if (!isdigit(input[i]) && input[i] != '.') {
+                valid = false;
+                break;
+            }
         }
-        else {
-            cin.ignore(1000, '\n');
+        if (!valid || input.empty()) {
+            cout << "Invalid input. Please enter a valid amount!" << endl;
+        } else {
+            value = atof(input.c_str());
             return value;
         }
     }
